@@ -11,15 +11,12 @@ const socialLinks = {
 
 // You can replace these with your actual navigation links
 const navLinks = {
-  quickLinks: [
-    { name: "Home", href: "#" },
-    { name: "About Us", href: "#" },
-    { name: "Services", href: "#" },
-    { name: "Blog", href: "#" },
+  teamWork: [
+    { name: "Leader: Sorm Sophat", href: "#" },
+    { name: "Members: Thida", href: "#" },
   ],
   support: [
     { name: "Contact Us", href: "#" },
-    { name: "FAQ", href: "#" },
     { name: "Privacy Policy", href: "#" },
     { name: "Terms of Service", href: "#" },
   ],
@@ -82,7 +79,7 @@ function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-900 text-gray-300">
+    <footer className="bg-slate-800 text-gray-300">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           {/* Logo and Description Section */}
@@ -101,10 +98,10 @@ function Footer() {
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
                 <h3 className="text-sm font-semibold leading-6 text-white">
-                  Quick Links
+                  Team Project
                 </h3>
                 <ul role="list" className="mt-4 space-y-2">
-                  {navLinks.quickLinks.map((item) => (
+                  {navLinks.teamWork.map((item) => (
                     <li key={item.name}>
                       <a
                         href={item.href}
@@ -116,7 +113,9 @@ function Footer() {
                   ))}
                 </ul>
               </div>
-              <div className="mt-10 md:mt-0">
+            </div>
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+              <div>
                 <h3 className="text-sm font-semibold leading-6 text-white">
                   Support
                 </h3>
@@ -132,41 +131,6 @@ function Footer() {
                     </li>
                   ))}
                 </ul>
-              </div>
-            </div>
-
-            {/* Newsletter Section */}
-            <div className="md:grid md:grid-cols-1 md:gap-8">
-              <div>
-                <h3 className="text-sm font-semibold leading-6 text-white">
-                  Subscribe to our newsletter
-                </h3>
-                <p className="mt-4 text-sm text-gray-400">
-                  The latest news, articles, and resources, sent to your inbox
-                  weekly.
-                </p>
-                <form className="mt-6 sm:flex sm:max-w-md">
-                  <label htmlFor="email-address" className="sr-only">
-                    Email address
-                  </label>
-                  <input
-                    type="email"
-                    name="email-address"
-                    id="email-address"
-                    autoComplete="email"
-                    required
-                    className="w-full min-w-0 appearance-none rounded-md border-0 bg-white/5 px-3 py-1.5 text-base text-white shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:w-64 sm:text-sm sm:leading-6 xl:w-full"
-                    placeholder="Enter your email"
-                  />
-                  <div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
-                    <button
-                      type="submit"
-                      className="flex w-full items-center justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors duration-300"
-                    >
-                      Subscribe
-                    </button>
-                  </div>
-                </form>
               </div>
             </div>
           </div>

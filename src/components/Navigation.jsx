@@ -13,9 +13,9 @@ function MobileNavBar() {
       icon: Home,
     },
     {
-        name: "Favorites",
-        to: "/favorites",
-        icon: Favorites,
+      name: "Favorites",
+      to: "/favorites",
+      icon: Favorites,
     },
     {
       name: "Post",
@@ -30,7 +30,7 @@ function MobileNavBar() {
   ];
 
   return (
-    <nav className="fixed rounded-2xl bottom-0 left-0 right-0 bg-gray-100 z-50 lg:hidden mb-1 mx-2">
+    <nav className="fixed rounded-2xl bottom-0 left-0 right-0 bg-white border z-50 lg:hidden mb-1 mx-2">
       <div className="flex justify-around items-stretch gap-2">
         {navItems.map((item) => {
           return (

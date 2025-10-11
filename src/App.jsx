@@ -91,7 +91,7 @@ function App() {
         </Route>
 
         {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLog />} />
+        <Route path="/admin" element={<AdminLog />} />
 
         <Route path="/admin/manage" element={<AdminManage />}>
           <Route path="/admin/manage" element={<Dashboard />} />

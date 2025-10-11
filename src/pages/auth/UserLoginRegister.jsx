@@ -286,9 +286,6 @@ function UserLoginRegister() {
               className="w-full h-full object-cover"
             />
           </div>
-          <p className="text-xs text-gray-500 tracking-widest">
-            Welcome to
-          </p>
           <h1 className="text-xl font-bold text-gray-800 tracking-wider">
             Room Rental Finder Cambodian
           </h1>
@@ -301,7 +298,7 @@ function UserLoginRegister() {
         <h2 className="text-4xl font-bold mb-2">
           {isLoginView ? "Login" : "Signup"}
         </h2>
-        <p className="text-gray-500 mb-6">Bessiness Account</p>
+        <p className="text-gray-500 mb-6">Business Account</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {renderFormFields()}
