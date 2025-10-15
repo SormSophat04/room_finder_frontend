@@ -102,7 +102,7 @@ const initialUsers = [
 
 
 // --- Main App Component ---
-function UserManage() {
+function RoomManage() {
   const [users, setUsers] = useState(initialUsers);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
@@ -185,7 +185,7 @@ function UserManage() {
               <table className="w-full text-left">
                 <thead className="bg-gray-800">
                   <tr>
-                    <th className="p-4 font-semibold">Name</th>
+                    <th className="p-4 font-semibold">Images</th>
                     <th className="p-4 font-semibold">Role</th>
                     <th className="p-4 font-semibold">Status</th>
                     <th className="p-4 font-semibold">Contact</th>
@@ -195,13 +195,20 @@ function UserManage() {
                 <tbody>
                   {filteredUsers.map(user => (
                     <tr key={user.id} className="border-b border-gray-800 hover:bg-gray-900">
-                      <td className="p-4 flex items-center space-x-3">
-                        <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                        <td className="p-4 flex items-center space-x-3">
+                        <img src={user.avatar} alt={user.name} className="w-30 h-25 rounded-2xl object-cover" />
                         <div>
                           <p className="font-medium text-white">{user.name}</p>
                           <p className="text-sm text-gray-400">{user.email}</p>
                         </div>
                       </td>
+                      {/* <td className="p-4 flex items-center space-x-3">
+                        <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full object-cover" />
+                        <div>
+                          <p className="font-medium text-white">{user.name}</p>
+                          <p className="text-sm text-gray-400">{user.email}</p>
+                        </div>
+                      </td> */}
                       <td className="p-4 text-gray-300">{user.role}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -367,5 +374,5 @@ function DeleteUserModal({ user, onDelete, onClose }) {
   );
 }
 
-export default UserManage;
+export default RoomManage;
 

@@ -275,10 +275,10 @@ function UserLoginRegister() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans flex flex-col items-center justify-start pt-10 px-4">
+    <div className="min-h-screen bg-white font-sans flex flex-col items-center justify-start pt-6 px-4">
       <div className="w-full max-w-sm mx-auto text-center">
         {/* Logo Section */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="w-24 h-24 mx-auto flex items-center justify-center mb-2 overflow-hidden">
             <img
               src={House}

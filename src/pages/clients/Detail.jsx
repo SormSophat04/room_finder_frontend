@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
 // --- SVG Icons for the Detail Page ---
@@ -14,7 +14,17 @@ const ArrowLeftIcon = ({ className }) => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
   </svg>
 );
-
+const TelegramIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="white"
+  >
+    <path d="M24 0l-6 22-8.129-7.239 7.802-8.234-10.458 7.227-7.215-2.428 24-11.326z" />
+  </svg>
+);
 const StarIcon = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -67,6 +77,16 @@ const WifiIcon = () => (
       strokeWidth={2}
       d="M4.222 12.333a11.111 11.111 0 0115.556 0"
     />
+  </svg>
+);
+const HeartIcon = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+  >
+    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
   </svg>
 );
 const ParkingIcon = () => (
@@ -125,14 +145,10 @@ const Card = ({ title, location, price, imageUrl }) => (
 
 // --- Main Detail Page Component ---
 function Detail({ products }) {
-  // --- Mock Data ---
-  const property = {
-    title: "Spectacular Modern Villa with Ocean View",
-    type: "Villas",
-    location: "Malibu, California",
+  // --- Mock Data for property details (amenities, owner, description) ---
+  const propertyDetails = {
     rating: 4.98,
     reviews: 125,
-    price: 750,
     description:
       "Escape to this stunning modern villa offering breathtaking panoramic ocean views from every room. With a sleek, open-concept design, private infinity pool, and state-of-the-art amenities, this is the ultimate luxury getaway. Perfect for families or a romantic retreat.",
     owner: {
@@ -140,13 +156,6 @@ function Detail({ products }) {
       avatarUrl: "https://placehold.co/100x100/E2E8F0/4A5568?text=Owner",
       isSuperhost: true,
     },
-    images: [
-      "https://placehold.co/1200x800/A0AEC0/FFFFFF?text=Main+View",
-      "https://placehold.co/600x400/BEE3F8/2C5282?text=Pool",
-      "https://placehold.co/600x400/C6F6D5/2F855A?text=Living+Room",
-      "https://placehold.co/600x400/FED7D7/9B2C2C?text=Bedroom",
-      "https://placehold.co/600x400/FEEBC8/975A16?text=Balcony",
-    ],
     amenities: [
       { name: "Fast Wifi", icon: <WifiIcon /> },
       { name: "Free Parking", icon: <ParkingIcon /> },
@@ -188,6 +197,19 @@ function Detail({ products }) {
   const { id } = useParams();
   const product = products.find((p) => p.id === parseInt(id));
 
+  // Ensure product.images is an array, default to an empty array if not defined
+  const productImages = product?.images || [];
+
+  // ** NEW: State for the currently displayed main image **
+  const [activeImage, setActiveImage] = useState(() => productImages[0] || "");
+
+  // ** NEW: Set the active image when the component loads or product changes **
+  useEffect(() => {
+    if (productImages.length > 0) {
+      setActiveImage(productImages[0]);
+    }
+  }, [productImages]);
+  
   // A check to prevent crashing if the product ID is not found
   if (!product) {
     return (
@@ -202,75 +224,113 @@ function Detail({ products }) {
 
   return (
     <div className="bg-gray-50 min-h-screen font-sans">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* --- Back to Home Link (NEW) --- */}
-        <div className="mb-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {/* --- Back to Home Link --- */}
+        <div className="mb-4 flex items-center justify-between relative">
           <Link
             to="/"
-            className="inline-flex  bg-gray-200 py-2 px-4 rounded-lg inline-block items-center text-gray-600 hover:text-gray-900 transition-colors duration-300 group font-semibold"
+            className="inline-flex bg-gray-200 py-2 px-4 rounded-lg items-center text-gray-600 hover:text-gray-900 transition-colors duration-300 group font-semibold"
           >
             <ArrowLeftIcon className="w-5 h-5 mr-2 transition-transform group-hover:-translate-x-1" />
             Back
           </Link>
+          <button className="bg-gray-200 backdrop-blur-sm p-2 rounded-full text-black hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-300">
+            <HeartIcon className="w-6 h-6" />
+          </button>
         </div>
 
-        {/* --- Image Gallery --- */}
-        <div className="grid grid-cols-4 grid-rows-2 gap-2 mb-8 h-[50vh] max-h-96">
-          <div className="col-span-4 sm:col-span-2 row-span-2 rounded-xl overflow-hidden">
-            <img
-              src={property.images[0]}
-              alt="Main property view"
-              className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
-            />
-          </div>
-          {property.images.slice(1, 5).map((img, index) => (
-            <div
-              key={index}
-              className="hidden sm:block rounded-xl overflow-hidden"
-            >
-              <img
-                src={img}
-                alt={`Property view ${index + 1}`}
-                className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* --- Main Content --- */}
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Column: Details */}
+        {/* --- Layout: Images left (desktop) / Details right --- */}
+        <div className="flex flex-col lg:flex-row gap-8 mb-8">
+          {/* Left: Image gallery */}
           <div className="w-full lg:w-2/3">
-            <h1 className="text-3xl font-bold text-gray-800">
-              {product.title}
-            </h1>
-            <div className="flex items-center text-gray-600 mt-2 space-x-4">
-              <span>{product.type}</span>
-              <span className="flex items-center">
-                <LocationMarkerIcon /> {product.location}
-              </span>
-            </div>
-            <div className="flex items-center mt-2">
-              <StarIcon className="w-5 h-5 text-yellow-500 mr-1" />
-              <span className="font-bold">{property.rating}</span>
-              <span className="text-gray-500 ml-2">
-                ({property.reviews} reviews)
-              </span>
-            </div>
-            <hr className="my-6" />
+            {productImages.length > 0 ? (
+              <>
+                <div className="bg-gray-200 rounded-lg overflow-hidden mb-4">
+                  <img
+                    src={activeImage}
+                    alt="Main product view"
+                    className="w-full h-94 lg:h-160 object-cover"
+                  />
+                </div>
 
-            <p className="text-gray-700 leading-relaxed">
-              {property.description}
-            </p>
-            <hr className="my-6" />
+                {productImages.length > 1 && (
+                  <div className="flex space-x-2 overflow-x-auto">
+                    {productImages.map((img, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => setActiveImage(img)}
+                        className="flex-shrink-0"
+                        aria-label={`Thumbnail ${index + 1}`}
+                      >
+                        <img
+                          src={img}
+                          alt={`Thumbnail ${index + 1}`}
+                          className={`w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md transition-all duration-200 ${
+                            activeImage === img
+                              ? "border-2 border-blue-600 p-1"
+                              : "opacity-70 hover:opacity-100"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="h-64 flex items-center justify-center bg-gray-200 rounded-xl text-gray-600 text-xl font-semibold">
+                No images available
+              </div>
+            )}
+          </div>
 
-            <h2 className="text-xl font-bold text-gray-800 mb-4">Amenities</h2>
+          {/* Right: Title / meta / booking box */}
+          <div className="w-full lg:w-1/3">
+            <div className="bg-white p-6 rounded-xl border border-gray-300 sticky top-8">
+              <h1 className="text-2xl font-bold text-gray-800 mb-2">{product.title}</h1>
+              <div className="flex items-center text-gray-600 mb-3">
+                <LocationMarkerIcon />
+                <span className="truncate">{product.location || product.type}</span>
+              </div>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-2xl font-bold text-gray-800">
+                  ${product.price}
+                  <span className="text-base font-normal text-gray-500"> /month</span>
+                </p>
+                <div className="flex items-center">
+                  <StarIcon className="w-5 h-5 text-yellow-500 mr-1" />
+                  <span className="font-bold">{propertyDetails.rating}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center my-4">
+                <img src={propertyDetails.owner.avatarUrl} alt={propertyDetails.owner.name} className="w-16 h-16 rounded-full" />
+                <div className="ml-4">
+                  <p className="font-bold text-gray-800">{propertyDetails.owner.name}</p>
+                  {propertyDetails.owner.isSuperhost && (
+                    <p className="text-sm text-purple-600 font-semibold">Superhost</p>
+                  )}
+                </div>
+              </div>
+
+              <button className="w-full mb-2 py-3 bg-blue-400 text-white rounded-lg font-semibold text-lg hover:bg-blue-600 transition-colors flex items-center justify-center">
+                <span>Tel {propertyDetails.owner.tel || "082828277"}</span>
+              </button>
+              <button className="w-full py-3 bg-blue-400 text-white rounded-lg font-semibold text-lg hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2">
+                <TelegramIcon />
+                <span>Contact Owner</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* --- Details below (full width): Amenities & Description --- */}
+        <div className="w-full">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Amenities</h2>
             <div className="grid grid-cols-2 gap-4">
-              {property.amenities.map((amenity) => (
-                <div
-                  key={amenity.name}
-                  className="flex items-center space-x-3 text-gray-700"
-                >
+              {propertyDetails.amenities.map((amenity) => (
+                <div key={amenity.name} className="flex items-center space-x-3 text-gray-700">
                   {amenity.icon}
                   <span>{amenity.name}</span>
                 </div>
@@ -278,48 +338,14 @@ function Detail({ products }) {
             </div>
           </div>
 
-          {/* Right Column: Booking & Owner */}
-          <div className="w-full lg:w-1/3">
-            <div className="bg-white p-6 rounded-2xl shadow-lg sticky top-8">
-              <div className="flex justify-between items-center mb-4">
-                <p className="text-2xl font-bold text-gray-800">
-                  ${product.price}
-                  <span className="text-base font-normal text-gray-500">
-                    /mo
-                  </span>
-                </p>
-                <div className="flex items-center">
-                  <StarIcon className="w-5 h-5 text-yellow-500 mr-1" />
-                  <span className="font-bold">{property.rating}</span>
-                </div>
-              </div>
-              <button className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300">
-                Request to Book
-              </button>
-              <div className="flex items-center justify-center mt-6">
-                <img
-                  src={property.owner.avatarUrl}
-                  alt={property.owner.name}
-                  className="w-16 h-16 rounded-full"
-                />
-                <div className="ml-4">
-                  <p className="font-bold text-gray-800">
-                    {property.owner.name}
-                  </p>
-                  {property.owner.isSuperhost && (
-                    <p className="text-sm text-purple-600 font-semibold">
-                      Superhost
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <hr className="my-6" />
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Description</h2>
+          <p className="text-gray-700 leading-relaxed">{propertyDetails.description}</p>
+          <hr className="my-6" />
         </div>
 
         {/* --- Recommendations Section --- */}
         <div className="mt-16">
-          <hr className="mb-8" />
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
             You might also like
           </h2>
@@ -333,5 +359,5 @@ function Detail({ products }) {
     </div>
   );
 }
-``
+
 export default Detail;

@@ -86,7 +86,7 @@ function Sidebar() {
   const navItems = [
     { icon: <LayoutDashboardIcon />, name: "Overview", path: "/admin/manage", end: true },
     { icon: <BarChartIcon />, name: "Users", path: "/admin/manage/users" },
-    { icon: <CreditCardIcon />, name: "Rooms", path: "/admin/manage/products" },
+    { icon: <CreditCardIcon />, name: "Rooms", path: "/admin/manage/rooms" },
     { icon: <SettingsIcon />, name: "Manage", path: "/admin/manage/settings" },
     // { icon: <Settings2Icon />, name: "Settings", path: "/admin/manage" },
     // { icon: <HelpCircleIcon />, name: "Support", path: "/admin/manage" },

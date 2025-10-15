@@ -90,10 +90,12 @@ const AllIcon = () => (
 );
 
 // --- Modern Product Card Component (Optimized for Mobile) ---
-const Card = ({ title, location, price }) => (
+const Card = ({ title, location, price, imageUrl }) => (
   <div className="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out">
     {/* Image Placeholder */}
-    <div className="bg-gray-200 h-36 sm:h-48 w-full"></div>
+    <div className="bg-gray-200 h-36 sm:h-58 w-full">
+      <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+    </div>
     {/* Content */}
     <div className="p-3">
       <h3 className="text-sm sm:text-base font-bold text-gray-800 mb-1 truncate">
@@ -103,7 +105,7 @@ const Card = ({ title, location, price }) => (
         <LocationMarkerIcon />
         <span>{location}</span>
       </div>
-      <p className="text-base font-semibold text-blue-600">{price}</p>
+      <p className="text-base font-semibold text-blue-600">{price}/month</p>
     </div>
   </div>
 );
@@ -190,6 +192,7 @@ function Home({ products }) {
               <Link to={`/detail/${product.id}`} key={product.id}>
                 <Card
                   key={product.id}
+                  imageUrl={product.imageUrl}
                   title={product.title}
                   location={product.location}
                   price={product.price}

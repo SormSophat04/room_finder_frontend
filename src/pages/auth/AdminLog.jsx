@@ -66,7 +66,7 @@ function AdminLog() {
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600">
                         <LogoIcon />
                     </div>
-                    <h1 className="text-3xl font-bold text-white">Admin Portal</h1>
+                    <h1 className="text-3xl font-bold text-white">Admin Login</h1>
                     <p className="mt-2 text-gray-400">Securely sign in to your dashboard.</p>
                 </div>
 

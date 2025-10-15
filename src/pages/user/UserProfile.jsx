@@ -1,404 +1,248 @@
-import React from "react";
+import React from 'react';
+
+// --- SVG Icons (to keep it self-contained) ---
+
+const GlobeIcon = () => (
+  <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9V3m0 18a9 9 0 009-9m-9 9a9 9 0 00-9-9"></path></svg>
+);
+
+const LikeIcon = () => (
+    <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12" /><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a2 2 0 0 1 1.79 1.11L15 5.88Z" /></svg>
+);
+
+const CommentIcon = () => (
+    <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>
+);
+
+const ShareIcon = () => (
+    <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" x2="12" y1="2" y2="15" /></svg>
+);
+
+const MoreHorizIcon = () => (
+    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+);
+
+// --- Reusable Components ---
+
+const ProfileTab = ({ label, isActive, count }) => (
+  <button className={`py-3 px-4 font-semibold text-sm rounded-lg ${isActive ? 'text-blue-600 bg-blue-100' : 'text-gray-600 hover:bg-gray-200'}`}>
+    {label} {count && <span className="text-gray-500 font-normal">{count}</span>}
+  </button>
+);
+
+const InfoItem = ({ icon, text }) => (
+    <div className="flex items-center space-x-2 text-gray-700">
+        {icon}
+        <span className="text-sm">{text}</span>
+    </div>
+);
+
+const Post = ({ user, time, content, image, likes, comments }) => (
+    <div className="bg-white p-4 rounded-lg shadow-sm">
+        <div className="flex items-start space-x-3 mb-3">
+            <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
+            <div>
+                <p className="font-semibold text-gray-800">{user.name}</p>
+                <div className="flex items-center space-x-1 text-xs text-gray-500">
+                    <span>{time}</span>
+                    <span>·</span>
+                    <GlobeIcon />
+                </div>
+            </div>
+        </div>
+        <p className="text-gray-800 text-sm mb-3">{content}</p>
+        {image && <img src={image} alt="Post content" className="rounded-lg w-full mb-3" />}
+        <div className="flex justify-between items-center text-xs text-gray-500 mb-2">
+            <div>{likes} Likes</div>
+            <div>{comments} Comments</div>
+        </div>
+        <hr/>
+        <div className="flex justify-around pt-2 text-gray-600 font-semibold text-sm">
+            <button className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg w-full justify-center">
+                <LikeIcon /> <span>Like</span>
+            </button>
+            <button className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg w-full justify-center">
+                <CommentIcon /> <span>Comment</span>
+            </button>
+            <button className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg w-full justify-center">
+                <ShareIcon /> <span>Share</span>
+            </button>
+        </div>
+    </div>
+);
+
 
 function UserProfile() {
-  // Mock user data to populate the profile page
+  // Mock data for the profile
   const user = {
-    username: "johndoe",
-    fullName: "John Doe",
-    bio: "Photographer 📸 | Traveler ✈️ | Coffee Lover ☕️\nCreating visual stories one click at a time.",
-    website: "johndoe.com",
-    profilePic: "https://placehold.co/150x150/EFEFEF/333333?text=JD",
-    stats: {
-      posts: 128,
-      followers: 4321,
-      following: 567,
+    name: 'Ada Lovelace',
+    avatar: 'https://placehold.co/100x100/E2E8F0/4A5568?text=Ada',
+    coverPhoto: 'https://placehold.co/1200x400/BFDBFE/1E3A8A?text=Scenic+View',
+    friendsCount: 1240,
+    intro: {
+        work: "Computer Scientist at Babbage Labs",
+        education: "Studied at University of London",
+        location: "Lives in London, UK",
+        from: "From London, UK",
     },
-    highlights: [
-      {
-        id: 1,
-        title: "Travel",
-        cover: "https://placehold.co/80x80/FBBF24/FFFFFF?text=✈️",
-      },
-      {
-        id: 2,
-        title: "Food",
-        cover: "https://placehold.co/80x80/F87171/FFFFFF?text=🍕",
-      },
-      {
-        id: 3,
-        title: "Projects",
-        cover: "https://placehold.co/80x80/60A5FA/FFFFFF?text=💻",
-      },
-      {
-        id: 4,
-        title: "Friends",
-        cover: "https://placehold.co/80x80/34D399/FFFFFF?text=😊",
-      },
-      {
-        id: 5,
-        title: "Gym",
-        cover: "https://placehold.co/80x80/A78BFA/FFFFFF?text=💪",
-      },
-      {
-        id: 6,
-        title: "Nature",
-        cover: "https://placehold.co/80x80/22C55E/FFFFFF?text=🌲",
-      },
+    photos: [
+        'https://placehold.co/300x300/A5B4FC/1E293B',
+        'https://placehold.co/300x300/C7D2FE/1E293B',
+        'https://placehold.co/300x300/A5B4FC/1E293B',
+        'https://placehold.co/300x300/C7D2FE/1E293B',
+        'https://placehold.co/300x300/A5B4FC/1E293B',
+        'https://placehold.co/300x300/C7D2FE/1E293B',
     ],
     posts: [
-      // Generate 12 placeholder posts for the grid
-      ...Array.from({ length: 12 }, (_, i) => ({
-        id: i + 1,
-        imageUrl: `https://placehold.co/500x500/E5E7EB/4B5563?text=Post+${
-          i + 1
-        }`,
-        likes: Math.floor(Math.random() * 2000),
-        comments: Math.floor(Math.random() * 500),
-      })),
-    ],
+        {
+            id: 1,
+            time: "8h",
+            content: "Excited to share my latest work on the Analytical Engine. The potential for this machine is boundless! It can weave algebraic patterns just as the Jacquard loom weaves flowers and leaves. #computing #history #womenintech",
+            image: "https://placehold.co/600x400/C7D2FE/1E293B?text=Algorithm+Draft",
+            likes: 256,
+            comments: 48
+        },
+        {
+            id: 2,
+            time: "2d",
+            content: "A beautiful day for a walk and some deep thinking. Nature is often the best inspiration for mathematical concepts.",
+            image: null,
+            likes: 128,
+            comments: 22
+        }
+    ]
   };
 
-  // State to manage which content tab is currently active
-  const [activeTab, setActiveTab] = React.useState("posts");
-
-  // --- SVG Icons --- //
-  // These are functional components that render SVG icons for the UI.
-  const SettingsIcon = () => (
-    <svg
-      className="w-6 h-6 text-gray-800"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-      />
-    </svg>
-  );
-  const GridIcon = () => (
-    <svg
-      aria-label="Posts"
-      className="w-6 h-6"
-      fill="currentColor"
-      height="24"
-      role="img"
-      viewBox="0 0 24 24"
-      width="24"
-    >
-      <rect
-        fill="none"
-        height="18"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        width="18"
-        x="3"
-        y="3"
-      ></rect>
-      <line
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        x1="9.015"
-        x2="9.015"
-        y1="3"
-        y2="21"
-      ></line>
-      <line
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        x1="14.985"
-        x2="14.985"
-        y1="3"
-        y2="21"
-      ></line>
-      <line
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        x1="21"
-        x2="3"
-        y1="9.015"
-        y2="9.015"
-      ></line>
-      <line
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        x1="21"
-        x2="3"
-        y1="14.985"
-        y2="14.985"
-      ></line>
-    </svg>
-  );
-  const ReelsIcon = () => (
-    <svg
-      aria-label="Reels"
-      className="w-6 h-6"
-      fill="currentColor"
-      height="24"
-      role="img"
-      viewBox="0 0 24 24"
-      width="24"
-    >
-      <polygon
-        fill="none"
-        points="20 21 12 13.44 4 21 4 3 20 3 20 21"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      ></polygon>
-      <line
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        x1="12"
-        x2="12"
-        y1="13.44"
-        y2="3"
-      ></line>
-    </svg>
-  );
-  const TaggedIcon = () => (
-    <svg
-      aria-label="Tagged"
-      className="w-6 h-6"
-      fill="currentColor"
-      height="24"
-      role="img"
-      viewBox="0 0 24 24"
-      width="24"
-    >
-      <path
-        d="M10.201 3.797L12 1.998l1.799 1.799a1.79 1.79 0 001.272.529h.528a2.112 2.112 0 012.112 2.112v.528c0 .467.19.92.529 1.272l1.799 1.799-1.799 1.799a1.79 1.79 0 00-.529 1.272v.528a2.112 2.112 0 01-2.112 2.112h-.528a1.79 1.79 0 00-1.272.529L12 22.002l-1.799-1.799a1.79 1.79 0 00-1.272-.529h-.528A2.112 2.112 0 016.288 17.55v-.528a1.79 1.79 0 00-.529-1.272L3.96 13.95l1.799-1.799a1.79 1.79 0 00.529-1.272v-.528a2.112 2.112 0 012.112-2.112h.528A1.79 1.79 0 0010.201 3.797z"
-        fill="none"
-        stroke="currentColor"
-        strokeMiterlimit="10"
-        strokeWidth="2"
-      ></path>
-      <path
-        d="M15.596 8.404a3.801 3.801 0 11-3.802-3.802 3.801 3.801 0 013.802 3.802z"
-        fill="none"
-        stroke="currentColor"
-        strokeMiterlimit="10"
-        strokeWidth="2"
-      ></path>
-    </svg>
-  );
-
   return (
-    <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
-      <main className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
-        {/* -- Profile Header -- */}
-        <header className="flex flex-col sm:flex-row items-center sm:items-start mb-8">
-          {/* Profile Picture */}
-          <div className="w-32 h-32 sm:w-40 sm:h-40 flex-shrink-0">
-            <img
-              className="w-full h-full rounded-full object-cover shadow-md"
-              src={user.profilePic}
-              alt={user.fullName}
+    <div className="bg-gray-100 font-sans min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        {/* --- Profile Header --- */}
+        <div className="bg-white shadow-sm rounded-b-lg">
+          {/* Cover Photo */}
+          <div className="relative">
+            <img 
+              src={user.coverPhoto}
+              alt="Cover Photo" 
+              className="w-full h-48 md:h-72 lg:h-96 object-cover rounded-t-lg"
             />
+            <div className="absolute bottom-4 right-4">
+              <button className="bg-white/80 hover:bg-white text-gray-800 font-semibold py-2 px-3 rounded-lg text-sm flex items-center space-x-2">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd"></path></svg>
+                <span>Edit cover photo</span>
+              </button>
+            </div>
           </div>
-
+          
           {/* Profile Info */}
-          <section className="mt-4 sm:mt-0 sm:ml-10 md:ml-16 w-full">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6">
-              <h2 className="text-2xl font-light text-center sm:text-left">
-                {user.username}
-              </h2>
-              <div className="flex justify-center sm:justify-start items-center gap-2 mt-2 sm:mt-0">
-                <button className="bg-gray-200 hover:bg-gray-300 text-sm font-semibold py-1.5 px-4 rounded-lg">
-                  Edit profile
-                </button>
-                <button className="bg-gray-200 hover:bg-gray-300 text-sm font-semibold py-1.5 px-4 rounded-lg">
-                  View archive
-                </button>
-                <button className="p-1">
-                  <SettingsIcon />
-                </button>
-              </div>
+          <div className="p-4 md:flex md:items-end md:space-x-4">
+            <div className="relative md:static -mt-20 md:mt-0">
+                <img 
+                  src={user.avatar} 
+                  alt="Profile" 
+                  className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white object-cover"
+                />
             </div>
-
-            {/* Stats for larger screens */}
-            <div className="hidden sm:flex justify-start space-x-8 my-5">
-              <div>
-                <span className="font-semibold">{user.stats.posts}</span> posts
-              </div>
-              <div>
-                <span className="font-semibold">{user.stats.followers}</span>{" "}
-                followers
-              </div>
-              <div>
-                <span className="font-semibold">{user.stats.following}</span>{" "}
-                following
-              </div>
+            <div className="flex-grow mt-2 md:mt-0">
+                <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
+                <p className="text-gray-500 font-semibold">{user.friendsCount.toLocaleString()} friends</p>
             </div>
-
-            {/* Bio */}
-            <div className="text-center sm:text-left mt-4 sm:mt-0">
-              <p className="font-semibold">{user.fullName}</p>
-              <p className="text-gray-700 whitespace-pre-line">{user.bio}</p>
-              <a
-                href={`https://${user.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-900 font-semibold text-sm"
-              >
-                {user.website}
-              </a>
+            <div className="mt-4 md:mt-0 flex space-x-2">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center space-x-2">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"></path></svg>
+                    <span>Add to story</span>
+                </button>
+                <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg flex items-center space-x-2">
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
+                    <span>Edit profile</span>
+                </button>
             </div>
-          </section>
-        </header>
-
-        {/* Stats for smaller screens */}
-        <div className="flex sm:hidden justify-around border-t border-b border-gray-300 py-2 mb-6">
-          <div className="text-center">
-            <span className="font-semibold block">{user.stats.posts}</span>
-            <span className="text-gray-500">posts</span>
           </div>
-          <div className="text-center">
-            <span className="font-semibold block">{user.stats.followers}</span>
-            <span className="text-gray-500">followers</span>
-          </div>
-          <div className="text-center">
-            <span className="font-semibold block">{user.stats.following}</span>
-            <span className="text-gray-500">following</span>
-          </div>
+          
+          <hr className="mx-4"/>
+          
+          {/* Profile Navigation */}
+          <nav className="p-2 flex flex-wrap items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <ProfileTab label="Posts" isActive={true} />
+              <ProfileTab label="About" />
+              {/* <ProfileTab label="Friends" count={user.friendsCount.toLocaleString()} /> */}
+              {/* <ProfileTab label="Photos" /> */}
+              {/* <ProfileTab label="Videos" /> */}
+              <ProfileTab label="More" />
+            </div>
+            <button className="bg-gray-200 hover:bg-gray-300 p-2 rounded-lg">
+                <MoreHorizIcon />
+            </button>
+          </nav>
         </div>
-
-        {/* -- Story Highlights -- */}
-        <div className="flex items-center space-x-4 md:space-x-6 overflow-x-auto pb-4 mb-8">
-          {user.highlights.map((highlight) => (
-            <div key={highlight.id} className="text-center flex-shrink-0">
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-full p-0.5 bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
-                <div className="bg-white p-0.5 rounded-full">
-                  <img
-                    className="w-full h-full rounded-full object-cover"
-                    src={highlight.cover}
-                    alt={highlight.title}
-                  />
+        
+        {/* --- Profile Body --- */}
+        <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          {/* Left Column (Intro, Photos, etc.) */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+                <h2 className="font-bold text-xl text-gray-800 mb-2">Intro</h2>
+                <div className="space-y-3">
+                    <InfoItem icon={<svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v5a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h2zm4-1a1 1 0 00-1 1v1h2V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>} text={user.intro.work} />
+                    <InfoItem icon={<svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3.5a1 1 0 00.002 1.84L10 10l7.394-2.58a1 1 0 00.002-1.84l-7-3.5z"></path><path d="M10 12l-7.394-2.58a1 1 0 00-.002 1.84L10 14.83l7.394-2.57a1 1 0 00-.002-1.84L10 12z"></path><path d="M10 16l-7.394-2.58a1 1 0 00-.002 1.84L10 18.83l7.394-2.57a1 1 0 00-.002-1.84L10 16z"></path></svg>} text={user.intro.education} />
+                    <InfoItem icon={<svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path></svg>} text={user.intro.location} />
                 </div>
-              </div>
-              <p className="text-xs mt-1.5">{highlight.title}</p>
             </div>
-          ))}
-        </div>
-
-        {/* -- Profile Content Tabs -- */}
-        <div className="border-t border-gray-300">
-          <div className="flex justify-center items-center -mt-px space-x-12">
-            <button
-              className={`flex items-center gap-2 py-3 text-xs font-semibold uppercase tracking-wider ${
-                activeTab === "posts"
-                  ? "text-gray-800 border-t border-gray-800"
-                  : "text-gray-400"
-              }`}
-              onClick={() => setActiveTab("posts")}
-            >
-              <GridIcon /> Posts
-            </button>
-            <button
-              className={`flex items-center gap-2 py-3 text-xs font-semibold uppercase tracking-wider ${
-                activeTab === "reels"
-                  ? "text-gray-800 border-t border-gray-800"
-                  : "text-gray-400"
-              }`}
-              onClick={() => setActiveTab("reels")}
-            >
-              <ReelsIcon /> Reels
-            </button>
-            <button
-              className={`flex items-center gap-2 py-3 text-xs font-semibold uppercase tracking-wider ${
-                activeTab === "tagged"
-                  ? "text-gray-800 border-t border-gray-800"
-                  : "text-gray-400"
-              }`}
-              onClick={() => setActiveTab("tagged")}
-            >
-              <TaggedIcon /> Tagged
-            </button>
+            
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+                <div className="flex justify-between items-center mb-2">
+                    <h2 className="font-bold text-xl text-gray-800">Photos</h2>
+                    <button className="text-blue-600 hover:text-blue-700 text-sm font-semibold">See all photos</button>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                    {user.photos.map((photo, index) => (
+                        <img key={index} src={photo} alt={`Photo ${index+1}`} className="w-full h-24 object-cover rounded-lg" />
+                    ))}
+                </div>
+            </div>
           </div>
-        </div>
-
-        {/* -- Content Display -- */}
-        <div>
-          {activeTab === "posts" && (
-            <div className="grid grid-cols-3 gap-1 sm:gap-4 mt-4">
-              {user.posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="aspect-square bg-gray-200 relative group cursor-pointer"
-                >
-                  <img
-                    src={post.imageUrl}
-                    alt={`Post ${post.id}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-                    <div className="text-white opacity-0 group-hover:opacity-100 flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <svg
-                          className="w-5 h-5"
-                          fill="white"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-                        </svg>
-                        <span className="font-semibold">{post.likes}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <svg
-                          className="w-5 h-5"
-                          fill="white"
-                          viewBox="0 0 24 24"
-                          transform="scale(-1, 1)"
-                        >
-                          <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"></path>
-                        </svg>
-                        <span className="font-semibold">{post.comments}</span>
-                      </div>
-                    </div>
+          
+          {/* Right Column (Posts) */}
+          <div className="lg:col-span-7 space-y-4">
+              {/* Create Post */}
+              <div className="bg-white p-4 rounded-lg shadow-sm">
+                  <div className="flex items-center space-x-3 border-b pb-3 mb-3">
+                      <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
+                      <button className="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full w-full text-left px-4 py-2 text-sm">
+                          What's on your mind, {user.name.split(' ')[0]}?
+                      </button>
                   </div>
-                </div>
+                  <div className="flex justify-around">
+                      <button className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg text-sm font-semibold text-gray-600">
+                          <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd"></path></svg>
+                          <span>Photo/video</span>
+                      </button>
+                      <button className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg text-sm font-semibold text-gray-600">
+                          <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path d="M8 9a3 3 0 100-6 3 3 0 000 6z"></path><path fillRule="evenodd" d="M8 1a7 7 0 100 14A7 7 0 008 1zM8 15a7 7 0 005.93-3.355A3.987 3.987 0 0011 10.53V12a1 1 0 11-2 0v-1.47a4 4 0 00-4 0V12a1 1 0 11-2 0v-1.47A4 4 0 001 12.016 7 7 0 008 15z" clipRule="evenodd"></path></svg>
+                          <span>Tag friends</span>
+                      </button>
+                  </div>
+              </div>
+
+              {/* User Posts */}
+              {user.posts.map(post => (
+                  <Post 
+                      key={post.id}
+                      user={user}
+                      time={post.time}
+                      content={post.content}
+                      image={post.image}
+                      likes={post.likes}
+                      comments={post.comments}
+                  />
               ))}
-            </div>
-          )}
-          {activeTab !== "posts" && (
-            <div className="text-center py-20 text-gray-500">
-              <h3 className="text-2xl font-bold">Share Photos</h3>
-              <p className="mt-2">
-                When you share photos, they will appear on your profile.
-              </p>
-            </div>
-          )}
+          </div>
+          
         </div>
-      </main>
+      </div>
     </div>
-  );
+  )
 }
 
 export default UserProfile;

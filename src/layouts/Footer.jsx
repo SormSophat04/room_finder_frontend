@@ -172,7 +172,7 @@ function Footer() {
             &copy; {currentYear} Room Rental Finder Cambodian, Inc. All rights
             reserved.
           </p>
-          <div className="mt-18 sm:mt-0"></div>
+          <div className="mt-8 sm:mt-0"></div>
         </div>
       </div>
     </footer>
